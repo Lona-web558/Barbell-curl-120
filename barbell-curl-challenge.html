@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>120-Day Barbell Curl Challenge</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --steel: #1a1d23;
+    --iron: #0f1115;
+    --chrome: #c8d6e5;
+    --gold: #f5a623;
+    --fire: #ff4d00;
+    --ember: #ff8c42;
+    --ash: #4a5568;
+    --smoke: #2d3748;
+    --red-hot: #e53e3e;
+    --green: #48bb78;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--iron);
+    color: var(--chrome);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  /* HEADER */
+  .site-header {
+    background: linear-gradient(180deg, #000 0%, var(--iron) 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 24px 0 20px;
+    position: relative; overflow: hidden;
+  }
+
+  .site-header::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--fire), var(--gold), transparent);
+    animation: scanline 3s linear infinite;
+  }
+
+  @keyframes scanline {
+    0%     { transform: scaleX(0); transform-origin: left; }
+    50%    { transform: scaleX(1); transform-origin: left; }
+    50.01% { transform: scaleX(1); transform-origin: right; }
+    100%   { transform: scaleX(0); transform-origin: right; }
+  }
+
+  .header-icon {
+    font-size: 3rem; line-height: 1;
+    filter: drop-shadow(0 0 12px var(--gold));
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    from { filter: drop-shadow(0 0 8px var(--gold)); }
+    to   { filter: drop-shadow(0 0 20px var(--fire)); }
+  }
+
+  .main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: 4px; color: var(--gold);
+    text-shadow: 0 0 30px rgba(245,166,35,0.4); line-height: 1;
+  }
+
+  .sub-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: var(--ash);
+    letter-spacing: 3px; text-transform: uppercase;
+  }
+
+  /* PROGRESS BAR */
+  .progress-outer {
+    margin-top: 18px;
+    padding-top: 22px;
+    position: relative;
+    border-top: 1px solid rgba(245,166,35,0.15);
+  }
+
+  .pct-tick-labels {
+    position: relative; height: 16px; margin-bottom: 3px;
+  }
+
+  .pct-tick-label {
+    position: absolute;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; color: var(--ash);
+    transform: translateX(-50%);
+  }
+
+  .challenge-progress {
+    height: 16px; background: var(--smoke);
+    border-radius: 3px; overflow: hidden; position: relative;
+  }
+
+  .challenge-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--fire), var(--ember), var(--gold));
+    border-radius: 3px;
+    transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+
+  .challenge-progress-fill::after {
+    content: '';
+    position: absolute; top:0; right:0; bottom:0; width:30px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25));
+    animation: shimmer 1.5s linear infinite;
+  }
+
+  @keyframes shimmer { 0%{opacity:0} 50%{opacity:1} 100%{opacity:0} }
+
+  .pct-tick {
+    position: absolute; top: 0; bottom: 0; width: 2px;
+    background: rgba(255,255,255,0.12); pointer-events:none;
+  }
+
+  .day-scale {
+    display: flex; justify-content: space-between; margin-top: 3px;
+  }
+
+  /* BIG PERCENTAGE HERO */
+  .pct-hero {
+    background: var(--steel);
+    border: 1px solid var(--ash);
+    border-top: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 20px 24px;
+    position: relative; overflow: hidden;
+  }
+
+  .pct-hero::before {
+    content: '';
+    position: absolute; top:0; left:0; right:0; bottom:0;
+    background: radial-gradient(ellipse at top left, rgba(245,166,35,0.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  .big-pct {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.2rem, 7vw, 5.8rem);
+    line-height: 1;
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(245,166,35,0.45);
+    transition: color 0.5s;
+  }
+
+  /* SVG RING */
+  .ring-wrap {
+    position: relative; width: 84px; height: 84px; flex-shrink: 0;
+  }
+
+  .ring-wrap svg { transform: rotate(-90deg); display:block; }
+
+  .ring-bg   { fill: none; stroke: var(--smoke); stroke-width: 7; }
+  .ring-fill {
+    fill: none; stroke: var(--gold); stroke-width: 7;
+    stroke-linecap: round;
+    stroke-dasharray: 219.9;
+    stroke-dashoffset: 219.9;
+    transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1), stroke 0.5s;
+  }
+
+  .ring-center {
+    position: absolute; top:50%; left:50%;
+    transform: translate(-50%,-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; color: var(--gold); line-height:1;
+    text-align: center; transition: color 0.5s;
+    pointer-events:none;
+  }
+
+  /* MILESTONE BADGES */
+  .ms-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--smoke); border: 1px solid var(--ash);
+    border-radius: 3px; padding: 5px 11px;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.7rem;
+    color: var(--ash); transition: all 0.35s ease;
+    user-select:none;
+  }
+
+  .ms-badge.unlocked {
+    background: rgba(245,166,35,0.1); border-color: var(--gold);
+    color: var(--gold); box-shadow: 0 0 10px rgba(245,166,35,0.18);
+  }
+
+  .ms-badge.unlocked.complete {
+    background: rgba(255,77,0,0.12); border-color: var(--fire);
+    color: var(--fire); box-shadow: 0 0 14px rgba(255,77,0,0.25);
+  }
+
+  .motivation-text {
+    font-family: 'Rajdhani', sans-serif; font-weight:600;
+    font-size: 0.92rem; color: var(--ash); transition: color 0.4s;
+  }
+
+  /* STAT CARDS */
+  .stat-card {
+    background: var(--steel); border: 1px solid var(--ash);
+    border-top: 3px solid var(--gold); border-radius: 4px; padding: 18px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(245,166,35,0.1); }
+  .stat-card.fire-card  { border-top-color: var(--fire); }
+  .stat-card.ember-card { border-top-color: var(--ember); }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem; color: var(--gold); line-height: 1;
+  }
+
+  .stat-number.fire  { color: var(--fire); }
+  .stat-number.ember { color: var(--ember); }
+
+  .stat-label {
+    font-size: 0.7rem; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--ash); font-weight: 600;
+  }
+
+  /* LOG FORM */
+  .log-panel {
+    background: var(--steel); border: 1px solid var(--ash);
+    border-left: 4px solid var(--gold); border-radius: 4px; padding: 24px;
+  }
+
+  .section-heading {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem;
+    letter-spacing: 3px; color: var(--gold);
+    border-bottom: 1px solid var(--smoke);
+    padding-bottom: 10px; margin-bottom: 18px;
+  }
+
+  .form-label {
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ash); font-weight: 600; margin-bottom: 5px;
+  }
+
+  .form-control, .form-select {
+    background: var(--iron) !important; border: 1px solid var(--ash) !important;
+    color: var(--chrome) !important; font-family: 'Share Tech Mono', monospace;
+    font-size: 0.86rem; border-radius: 3px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 3px rgba(245,166,35,0.15) !important; outline: none;
+  }
+
+  .form-control::placeholder { color: var(--ash) !important; }
+
+  .btn-log {
+    background: linear-gradient(135deg, var(--fire), var(--gold));
+    border: none; color: #000;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+    letter-spacing: 3px; padding: 12px 36px;
+    border-radius: 3px; cursor: pointer; width: 100%;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-log:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,77,0,0.4); }
+  .btn-log:active { transform: translateY(0); }
+
+  /* CHART */
+  .chart-panel {
+    background: var(--steel); border: 1px solid var(--ash);
+    border-left: 4px solid var(--fire); border-radius: 4px; padding: 22px;
+  }
+
+  /* DAY GRID */
+  .day-grid-panel {
+    background: var(--steel); border: 1px solid var(--ash);
+    border-top: 3px solid var(--gold); border-radius: 4px; padding: 22px;
+  }
+
+  .day-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(26px, 1fr));
+    gap: 4px;
+  }
+
+  .day-dot {
+    width:100%; aspect-ratio:1; border-radius:3px;
+    background: var(--smoke); border: 1px solid transparent;
+    cursor: pointer; transition: all 0.15s; position: relative;
+  }
+
+  .day-dot.logged {
+    background: linear-gradient(135deg, var(--fire), var(--gold));
+    border-color: var(--gold); box-shadow: 0 0 6px rgba(245,166,35,0.28);
+  }
+
+  .day-dot.today { border-color: var(--chrome); box-shadow: 0 0 8px rgba(200,214,229,0.28); }
+  .day-dot:hover { transform: scale(1.2); }
+
+  .day-dot .tt {
+    position: absolute; bottom: 120%; left: 50%;
+    transform: translateX(-50%);
+    background: var(--iron); border: 1px solid var(--gold);
+    color: var(--chrome); font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; padding: 4px 8px; border-radius:3px;
+    white-space: nowrap; pointer-events:none;
+    opacity: 0; transition: opacity 0.15s; z-index:10;
+  }
+
+  .day-dot:hover .tt { opacity: 1; }
+
+  /* TABLE */
+  .log-table-panel {
+    background: var(--steel); border: 1px solid var(--ash);
+    border-left: 4px solid var(--ember); border-radius: 4px;
+    padding: 22px; max-height: 400px; overflow-y: auto;
+  }
+
+  .log-table-panel::-webkit-scrollbar { width:5px; }
+  .log-table-panel::-webkit-scrollbar-track { background: var(--iron); }
+  .log-table-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius:3px; }
+
+  .activity-table { width:100%; border-collapse:collapse; font-size:0.84rem; }
+
+  .activity-table thead th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.64rem; letter-spacing:2px; text-transform:uppercase;
+    color: var(--gold); border-bottom: 1px solid var(--smoke);
+    padding: 7px 10px; text-align:left;
+    position:sticky; top:0; background: var(--steel);
+  }
+
+  .activity-table tbody tr { border-bottom:1px solid rgba(74,85,104,0.22); transition: background 0.15s; }
+  .activity-table tbody tr:hover { background: rgba(245,166,35,0.04); }
+  .activity-table tbody td { padding:8px 10px; font-family:'Share Tech Mono',monospace; font-size:0.76rem; }
+
+  .badge-sets   { background:rgba(245,166,35,0.1); color:var(--gold);  border:1px solid rgba(245,166,35,0.22); border-radius:3px; padding:1px 7px; font-size:0.7rem; }
+  .badge-reps   { background:rgba(255,77,0,0.1);   color:var(--fire);  border:1px solid rgba(255,77,0,0.2);   border-radius:3px; padding:1px 7px; font-size:0.7rem; }
+  .badge-weight { background:rgba(255,140,66,0.1); color:var(--ember); border:1px solid rgba(255,140,66,0.2); border-radius:3px; padding:1px 7px; font-size:0.7rem; }
+
+  .btn-delete {
+    background:transparent; border:1px solid var(--red-hot); color:var(--red-hot);
+    border-radius:3px; padding:1px 8px; font-size:0.66rem; cursor:pointer;
+    font-family:'Share Tech Mono',monospace; letter-spacing:1px; transition:background 0.15s;
+  }
+
+  .btn-delete:hover { background:rgba(229,62,62,0.15); }
+
+  .empty-state {
+    text-align:center; padding:26px; color:var(--ash);
+    font-family:'Share Tech Mono',monospace; font-size:0.76rem; letter-spacing:1px;
+  }
+
+  /* TOAST */
+  .toast-container { position:fixed; bottom:20px; right:20px; z-index:9999; }
+
+  .toast-msg {
+    background:var(--steel); border:1px solid var(--gold); border-left:4px solid var(--gold);
+    color:var(--chrome); font-family:'Share Tech Mono',monospace; font-size:0.78rem;
+    padding:12px 18px; border-radius:4px; margin-top:8px;
+    animation:slideUp 0.3s ease, fadeOut 0.4s ease 2.5s forwards;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  }
+
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+  @keyframes fadeOut { to{opacity:0;transform:translateY(-8px)} }
+
+  .streak-flame { display:inline-block; animation:flicker 0.6s ease-in-out infinite alternate; }
+  @keyframes flicker { from{transform:scale(1) rotate(-2deg)} to{transform:scale(1.1) rotate(2deg);filter:brightness(1.3)} }
+
+  @media (max-width:576px) {
+    .main-title { font-size:1.9rem; }
+    .big-pct { font-size:2.8rem; }
+    .day-grid { grid-template-columns: repeat(auto-fill, minmax(20px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <div class="container">
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div class="header-icon">🏋️</div>
+        <div>
+          <div class="main-title">120-Day Barbell Curl Challenge</div>
+          <div class="sub-title">Activity Log &amp; Progress Tracker</div>
+        </div>
+        <div class="ms-auto text-end">
+          <div class="sub-title">STARTED</div>
+          <div id="startDateDisplay" style="font-family:'Share Tech Mono',monospace;font-size:0.86rem;color:var(--gold);">—</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS BAR -->
+      <div class="progress-outer">
+        <!-- % labels above bar -->
+        <div class="pct-tick-labels">
+          <span class="pct-tick-label" style="left:0%">0%</span>
+          <span class="pct-tick-label" style="left:25%">25%</span>
+          <span class="pct-tick-label" style="left:50%">50%</span>
+          <span class="pct-tick-label" style="left:75%">75%</span>
+          <span class="pct-tick-label" style="left:100%">100%</span>
+        </div>
+        <!-- Bar -->
+        <div class="challenge-progress" style="position:relative;">
+          <div class="challenge-progress-fill" id="progressFill" style="width:0%"></div>
+          <div class="pct-tick" style="left:25%"></div>
+          <div class="pct-tick" style="left:50%"></div>
+          <div class="pct-tick" style="left:75%"></div>
+        </div>
+        <!-- Day scale below -->
+        <div class="day-scale">
+          <span class="sub-title" style="font-size:0.56rem;">DAY 1</span>
+          <span class="sub-title" style="font-size:0.56rem;">DAY 30</span>
+          <span class="sub-title" style="font-size:0.56rem;">DAY 60</span>
+          <span class="sub-title" style="font-size:0.56rem;">DAY 90</span>
+          <span class="sub-title" style="font-size:0.56rem;">DAY 120</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container py-4">
+
+    <!-- ── PERCENTAGE HERO ── -->
+    <div class="pct-hero mb-4">
+      <div class="d-flex align-items-center gap-4 flex-wrap">
+
+        <!-- SVG Ring -->
+        <div class="ring-wrap">
+          <svg width="84" height="84" viewBox="0 0 84 84">
+            <circle class="ring-bg"   cx="42" cy="42" r="35"/>
+            <circle class="ring-fill" cx="42" cy="42" r="35" id="ringFill"/>
+          </svg>
+          <div class="ring-center" id="ringText">0%</div>
+        </div>
+
+        <!-- Numbers + motivation -->
+        <div>
+          <div class="sub-title mb-1">CHALLENGE COMPLETION</div>
+          <div class="d-flex align-items-baseline gap-3 flex-wrap">
+            <div class="big-pct" id="bigPct">0%</div>
+            <div>
+              <div class="motivation-text" id="motivationText">Get started — Day 1 awaits! 💪</div>
+              <div class="sub-title mt-1" id="progressLabel">0 / 120 DAYS LOGGED</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Milestone badges -->
+        <div class="ms-auto d-flex gap-2 flex-wrap">
+          <div class="ms-badge" id="ms25">🥉 25%</div>
+          <div class="ms-badge" id="ms50">🥈 50%</div>
+          <div class="ms-badge" id="ms75">🥇 75%</div>
+          <div class="ms-badge" id="ms100">🏆 100%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STAT CARDS ── -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-number" id="statDaysLogged">0</div>
+          <div class="stat-label">Days Logged</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card fire-card">
+          <div class="stat-number fire" id="statTotalReps">0</div>
+          <div class="stat-label">Total Reps</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card ember-card">
+          <div class="stat-number ember" id="statMaxWeight">0 <small style="font-size:0.85rem;">kg</small></div>
+          <div class="stat-label">Peak Weight</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-number" id="statStreak">0 <span class="streak-flame">🔥</span></div>
+          <div class="stat-label">Current Streak</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+
+      <!-- ── LOG FORM ── -->
+      <div class="col-lg-4">
+        <div class="log-panel">
+          <div class="section-heading">Log Workout</div>
+
+          <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" id="inputDate">
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label">Sets</label>
+              <input type="number" class="form-control" id="inputSets" min="1" max="20" placeholder="3">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Reps / Set</label>
+              <input type="number" class="form-control" id="inputReps" min="1" max="100" placeholder="12">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Weight (kg)</label>
+            <input type="number" class="form-control" id="inputWeight" min="0" step="0.5" placeholder="20">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Curl Variation</label>
+            <select class="form-select" id="inputVariation">
+              <option>Standard Barbell Curl</option>
+              <option>EZ-Bar Curl</option>
+              <option>Preacher Curl</option>
+              <option>Reverse Curl</option>
+              <option>Drag Curl</option>
+              <option>Wide-Grip Curl</option>
+              <option>Narrow-Grip Curl</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Notes (optional)</label>
+            <input type="text" class="form-control" id="inputNotes" placeholder="Felt strong today…">
+          </div>
+
+          <button class="btn-log" onclick="logWorkout()">⚡ LOG SET</button>
+        </div>
+      </div>
+
+      <!-- ── CHART + GRID ── -->
+      <div class="col-lg-8 d-flex flex-column gap-4">
+        <div class="chart-panel">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div class="section-heading mb-0" style="border:none;padding:0;">Progress Graph</div>
+            <div class="d-flex gap-2">
+              <button id="btnVolume" onclick="switchChart('volume')"
+                style="background:var(--gold);color:#000;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;border:none;border-radius:3px;padding:4px 13px;cursor:pointer;">Volume</button>
+              <button id="btnWeight" onclick="switchChart('weight')"
+                style="background:var(--smoke);color:var(--chrome);font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;border:none;border-radius:3px;padding:4px 13px;cursor:pointer;">Weight</button>
+              <button id="btnReps" onclick="switchChart('reps')"
+                style="background:var(--smoke);color:var(--chrome);font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;border:none;border-radius:3px;padding:4px 13px;cursor:pointer;">Reps</button>
+            </div>
+          </div>
+          <canvas id="mainChart" height="200"></canvas>
+        </div>
+
+        <div class="day-grid-panel">
+          <div class="section-heading" style="font-size:1.1rem;">120-Day Calendar Grid</div>
+          <div class="day-grid" id="dayGrid"></div>
+          <div class="d-flex gap-4 mt-3">
+            <span class="sub-title" style="font-size:0.6rem;"><span style="display:inline-block;width:10px;height:10px;background:linear-gradient(135deg,var(--fire),var(--gold));border-radius:2px;margin-right:5px;vertical-align:middle;"></span>LOGGED</span>
+            <span class="sub-title" style="font-size:0.6rem;"><span style="display:inline-block;width:10px;height:10px;background:var(--smoke);border:1px solid var(--chrome);border-radius:2px;margin-right:5px;vertical-align:middle;"></span>TODAY</span>
+            <span class="sub-title" style="font-size:0.6rem;"><span style="display:inline-block;width:10px;height:10px;background:var(--smoke);border-radius:2px;margin-right:5px;vertical-align:middle;"></span>PENDING</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACTIVITY TABLE ── -->
+    <div class="log-table-panel">
+      <div class="section-heading">Activity Log</div>
+      <div id="activityTableWrap">
+        <div class="empty-state">// No workouts logged yet — start your challenge!</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ── STATE ─────────────────────────────────────
+const STORAGE_KEY = 'curlChallenge120v2';
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {
+  startDate: new Date().toISOString().split('T')[0],
+  logs: []
+};
+let chartMode = 'volume';
+let chartInstance = null;
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+// ── INIT ──────────────────────────────────────
+function init() {
+  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('startDateDisplay').textContent = formatDate(state.startDate);
+  buildDayGrid(); renderTable(); renderChart(); updateStats(); updateProgress();
+}
+
+// ── LOG ───────────────────────────────────────
+function logWorkout() {
+  const date      = document.getElementById('inputDate').value;
+  const sets      = parseInt(document.getElementById('inputSets').value);
+  const reps      = parseInt(document.getElementById('inputReps').value);
+  const weight    = parseFloat(document.getElementById('inputWeight').value);
+  const variation = document.getElementById('inputVariation').value;
+  const notes     = document.getElementById('inputNotes').value.trim();
+
+  if (!date)                       return toast('⚠ Please select a date');
+  if (!sets  || sets  < 1)         return toast('⚠ Enter valid sets');
+  if (!reps  || reps  < 1)         return toast('⚠ Enter valid reps');
+  if (isNaN(weight) || weight < 0) return toast('⚠ Enter valid weight');
+
+  const dayNum = getDayNumber(date);
+  if (dayNum < 1 || dayNum > 120)  return toast('⚠ Date outside 120-day challenge window');
+
+  state.logs.push({ id: Date.now(), date, sets, reps, weight, variation, notes });
+  state.logs.sort((a,b) => a.date.localeCompare(b.date));
+  save();
+
+  ['inputSets','inputReps','inputWeight','inputNotes'].forEach(id => document.getElementById(id).value = '');
+
+  buildDayGrid(); renderTable(); renderChart(); updateStats(); updateProgress();
+  toast('✅ Workout logged — keep grinding!');
+}
+
+function deleteLog(id) {
+  state.logs = state.logs.filter(l => l.id !== id);
+  save();
+  buildDayGrid(); renderTable(); renderChart(); updateStats(); updateProgress();
+  toast('🗑 Entry removed');
+}
+
+// ── PERCENTAGE + PROGRESS ─────────────────────
+function updateProgress() {
+  const uniqueDays = [...new Set(state.logs.map(l => l.date))].length;
+  const pct        = Math.min((uniqueDays / 120) * 100, 100);
+  const pctRounded = Math.round(pct * 10) / 10;
+  const pctDisplay = Number.isInteger(pctRounded) ? pctRounded + '%' : pctRounded + '%';
+
+  // Header bar
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // Big display
+  document.getElementById('bigPct').textContent = pctDisplay;
+  document.getElementById('progressLabel').textContent = `${uniqueDays} / 120 DAYS LOGGED`;
+
+  // Color big-pct by stage
+  const bigEl = document.getElementById('bigPct');
+  bigEl.style.color = pct >= 100 ? 'var(--fire)' : pct >= 75 ? 'var(--gold)' : pct >= 50 ? 'var(--ember)' : 'var(--gold)';
+
+  // SVG Ring (r=35, circumference ≈ 219.9)
+  const circ   = 2 * Math.PI * 35;
+  const offset = circ - (pct / 100) * circ;
+  const ring   = document.getElementById('ringFill');
+  ring.style.strokeDasharray  = circ;
+  ring.style.strokeDashoffset = offset;
+  ring.style.stroke = pct >= 100 ? 'var(--fire)' : pct >= 50 ? 'var(--gold)' : 'var(--ember)';
+  document.getElementById('ringText').textContent = Math.round(pct) + '%';
+  document.getElementById('ringText').style.color = ring.style.stroke;
+
+  // Motivation
+  const mot = document.getElementById('motivationText');
+  if      (pct === 0)   { mot.textContent = "Get started — Day 1 awaits! 💪";               mot.style.color='var(--ash)'; }
+  else if (pct < 10)    { mot.textContent = "Great start — the habit is forming! 🔥";        mot.style.color='var(--ember)'; }
+  else if (pct < 25)    { mot.textContent = "Building momentum — stay consistent! ⚡";       mot.style.color='var(--ember)'; }
+  else if (pct < 50)    { mot.textContent = "Quarter done! You're proving yourself! 💥";     mot.style.color='var(--gold)'; }
+  else if (pct < 75)    { mot.textContent = "Halfway! Biceps are responding! 🏋️";           mot.style.color='var(--gold)'; }
+  else if (pct < 90)    { mot.textContent = "Three-quarters complete — don't stop now! 🔑"; mot.style.color='var(--gold)'; }
+  else if (pct < 100)   { mot.textContent = "Final stretch — legends are made here! 🔱";    mot.style.color='var(--ember)'; }
+  else                  { mot.textContent = "CHALLENGE COMPLETE — You're a champion! 🏆";   mot.style.color='var(--fire)'; }
+
+  // Milestone badges
+  setMilestone('ms25',  pct >= 25,  false);
+  setMilestone('ms50',  pct >= 50,  false);
+  setMilestone('ms75',  pct >= 75,  false);
+  setMilestone('ms100', pct >= 100, true);
+}
+
+function setMilestone(id, achieved, isComplete) {
+  const el = document.getElementById(id);
+  el.classList.toggle('unlocked', achieved);
+  el.classList.toggle('complete', achieved && isComplete);
+}
+
+// ── STATS ─────────────────────────────────────
+function updateStats() {
+  const uniqueDays = [...new Set(state.logs.map(l => l.date))];
+  const totalReps  = state.logs.reduce((s,l) => s + l.sets * l.reps, 0);
+  const maxWeight  = state.logs.length ? Math.max(...state.logs.map(l => l.weight)) : 0;
+  const streak     = calcStreak();
+
+  document.getElementById('statDaysLogged').textContent = uniqueDays.length;
+  document.getElementById('statTotalReps').textContent  = totalReps.toLocaleString();
+  document.getElementById('statMaxWeight').innerHTML    = `${maxWeight} <small style="font-size:0.85rem;">kg</small>`;
+  document.getElementById('statStreak').innerHTML       = `${streak} <span class="streak-flame">🔥</span>`;
+}
+
+function calcStreak() {
+  const days = [...new Set(state.logs.map(l => l.date))].sort().reverse();
+  if (!days.length) return 0;
+  const today = new Date().toISOString().split('T')[0];
+  let streak = 0, cur = today;
+  for (const d of days) {
+    if (d === cur) {
+      streak++;
+      const dt = new Date(cur); dt.setDate(dt.getDate()-1);
+      cur = dt.toISOString().split('T')[0];
+    } else if (d < cur) break;
+  }
+  return streak;
+}
+
+// ── DAY GRID ──────────────────────────────────
+function buildDayGrid() {
+  const grid      = document.getElementById('dayGrid');
+  const loggedSet = new Set(state.logs.map(l => l.date));
+  const today     = new Date().toISOString().split('T')[0];
+  grid.innerHTML  = '';
+
+  for (let d = 1; d <= 120; d++) {
+    const dateStr = dayToDate(d);
+    const dot     = document.createElement('div');
+    dot.className = 'day-dot' +
+      (loggedSet.has(dateStr) ? ' logged' : '') +
+      (dateStr === today ? ' today' : '');
+
+    const tip = document.createElement('div');
+    tip.className = 'tt';
+    const logsOnDay = state.logs.filter(l => l.date === dateStr);
+    tip.textContent = `Day ${d} · ${formatDate(dateStr)}` +
+      (logsOnDay.length ? ` · ${logsOnDay.length} entry` : '');
+    dot.appendChild(tip);
+    grid.appendChild(dot);
+  }
+}
+
+// ── TABLE ─────────────────────────────────────
+function renderTable() {
+  const wrap = document.getElementById('activityTableWrap');
+  if (!state.logs.length) {
+    wrap.innerHTML = '<div class="empty-state">// No workouts logged yet — start your challenge!</div>';
+    return;
+  }
+  const sorted = [...state.logs].reverse();
+  wrap.innerHTML = `
+  <table class="activity-table">
+    <thead><tr>
+      <th>Day</th><th>Date</th><th>Variation</th>
+      <th>Sets</th><th>Reps</th><th>Weight</th><th>Volume</th><th>Notes</th><th></th>
+    </tr></thead>
+    <tbody>
+      ${sorted.map(l=>`
+      <tr>
+        <td style="color:var(--gold);font-weight:700;">${getDayNumber(l.date)}</td>
+        <td>${formatDate(l.date)}</td>
+        <td style="color:var(--chrome);">${l.variation}</td>
+        <td><span class="badge-sets">${l.sets}s</span></td>
+        <td><span class="badge-reps">${l.reps}r</span></td>
+        <td><span class="badge-weight">${l.weight}kg</span></td>
+        <td style="color:var(--ember);">${(l.sets*l.reps*l.weight).toLocaleString()}</td>
+        <td style="color:var(--ash);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.notes||'—'}</td>
+        <td><button class="btn-delete" onclick="deleteLog(${l.id})">DEL</button></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+// ── CHART ─────────────────────────────────────
+function switchChart(mode) {
+  chartMode = mode;
+  const map = { volume:'btnVolume', weight:'btnWeight', reps:'btnReps' };
+  Object.entries(map).forEach(([m,id]) => {
+    const el = document.getElementById(id);
+    el.style.background = m === mode ? 'var(--gold)' : 'var(--smoke)';
+    el.style.color       = m === mode ? '#000' : 'var(--chrome)';
+  });
+  renderChart();
+}
+
+function renderChart() {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  const dayMap = {};
+  state.logs.forEach(l => {
+    if (!dayMap[l.date]) dayMap[l.date] = { volume:0, weight:0, reps:0 };
+    dayMap[l.date].volume += l.sets * l.reps * l.weight;
+    dayMap[l.date].weight  = Math.max(dayMap[l.date].weight, l.weight);
+    dayMap[l.date].reps   += l.sets * l.reps;
+  });
+
+  const sortedDates = Object.keys(dayMap).sort();
+  const labels = sortedDates.map(d => `Day ${getDayNumber(d)}`);
+  const values = sortedDates.map(d =>
+    chartMode==='volume' ? dayMap[d].volume :
+    chartMode==='weight' ? dayMap[d].weight : dayMap[d].reps
+  );
+
+  const colors = {
+    volume:{ border:'#f5a623', bg:'rgba(245,166,35,0.1)' },
+    weight:{ border:'#ff8c42', bg:'rgba(255,140,66,0.1)' },
+    reps:  { border:'#ff4d00', bg:'rgba(255,77,0,0.09)'  }
+  };
+  const yLabels = { volume:'Volume (kg×reps)', weight:'Max Weight (kg)', reps:'Total Reps' };
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels.length ? labels : ['Day 1','Day 30','Day 60','Day 90','Day 120'],
+      datasets:[{
+        label: yLabels[chartMode],
+        data:  values.length ? values : [0,0,0,0,0],
+        borderColor: colors[chartMode].border,
+        backgroundColor: colors[chartMode].bg,
+        borderWidth: 2.5,
+        pointBackgroundColor: colors[chartMode].border,
+        pointBorderColor: '#000',
+        pointRadius: 5, pointHoverRadius: 8,
+        fill: true, tension: 0.35
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{ labels:{ color:'#c8d6e5', font:{ family:"'Rajdhani',sans-serif", size:13, weight:600 } } },
+        tooltip:{ backgroundColor:'#1a1d23', borderColor:'#f5a623', borderWidth:1,
+          titleColor:'#f5a623', bodyColor:'#c8d6e5',
+          titleFont:{ family:"'Share Tech Mono',monospace", size:11 },
+          bodyFont: { family:"'Share Tech Mono',monospace", size:10 },
+          padding:10 }
+      },
+      scales:{
+        x:{ ticks:{ color:'#4a5568', font:{ family:"'Share Tech Mono',monospace", size:9 }, maxTicksLimit:12 }, grid:{ color:'rgba(255,255,255,0.04)' } },
+        y:{ ticks:{ color:'#4a5568', font:{ family:"'Share Tech Mono',monospace", size:9 } }, grid:{ color:'rgba(255,255,255,0.04)' },
+            title:{ display:true, text:yLabels[chartMode], color:'#4a5568', font:{ family:"'Rajdhani',sans-serif", size:11, weight:600 } } }
+      },
+      interaction:{ mode:'index', intersect:false },
+      animation:{ duration:600, easing:'easeInOutQuart' }
+    }
+  });
+}
+
+// ── HELPERS ───────────────────────────────────
+function getDayNumber(dateStr) {
+  return Math.round((new Date(dateStr) - new Date(state.startDate)) / 86400000) + 1;
+}
+
+function dayToDate(day) {
+  const d = new Date(state.startDate);
+  d.setDate(d.getDate() + day - 1);
+  return d.toISOString().split('T')[0];
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr + 'T00:00:00')
+    .toLocaleDateString('en-ZA', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function toast(msg) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast-msg';
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+init();
+</script>
+</body>
+</html>
